@@ -19,11 +19,12 @@ export default function LoginForm(props) {
       const response = await loginApi(formData);
       if (response?.jwt) {
         login(response.jwt);
+        setLoading(false);
         onCloseModal();
       } else {
+        setLoading(false);
         toast.error("El email o la contraseña son incorrectos");
       }
-      setLoading(false);
     },
   });
 

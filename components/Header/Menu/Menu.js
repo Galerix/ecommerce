@@ -1,42 +1,41 @@
 import Link from "next/link";
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Menu, Grid, Icon } from "semantic-ui-react";
 import BasicModal from "../../Modal/BasicModal";
 import Auth from "../../Auth";
 import useAuth from "../../../hooks/useAuth";
-import { getMeApi } from "../../../api/user";
+import { getPlatformsApi } from "../../../api/platforms";
+import { map } from "lodash";
 
 export default function MenuWeb() {
+  const [platforms, setPlatforms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [titleModal, setTitleModal] = useState("Iniciar sesión");
-  const [user, setUser] = useState(undefined);
   const { auth, logout } = useAuth();
-
-  useMemo(() => {
-    (async () => {
-      const response = await getMeApi(logout);
-      setUser(response);
-    })();
-  }, [auth]);
 
   const onShowModal = () => setShowModal(true);
   const onCloseModal = () => setShowModal(false);
+
+  useEffect(() => {
+    (async () => {
+      const response = await getPlatformsApi();
+      setPlatforms(response || []);
+    })();
+  }, []);
 
   return (
     <div className="menu">
       <Container>
         <Grid>
           <Grid.Column className="menu__left" width={6}>
-            <MenuPlatforms />
+            <MenuPlatforms platforms={platforms} />
           </Grid.Column>
           <Grid.Column className="menu__right" width={10}>
-            {user !== undefined && (
-              <MenuOptions
-                onShowModal={onShowModal}
-                user={user}
-                logout={logout}
-              />
-            )}
+            <MenuOptions
+              onShowModal={onShowModal}
+              auth={auth}
+              logout={logout}
+            />
           </Grid.Column>
         </Grid>
       </Container>
@@ -52,27 +51,27 @@ export default function MenuWeb() {
   );
 }
 
-function MenuPlatforms() {
+function MenuPlatforms(props) {
+  const { platforms } = props;
+
   return (
     <Menu>
-      <Link href="/play-station">
-        <Menu.Item as="a">PlayStation</Menu.Item>
-      </Link>
-      <Link href="/xbox">
-        <Menu.Item as="a">Xbox</Menu.Item>
-      </Link>
-      <Link href="/switch">
-        <Menu.Item as="a">Switch</Menu.Item>
-      </Link>
+      {map(platforms, (platform) => (
+        <Link href={`/games/${platform.url}`} key={platform._id}>
+          <Menu.Item as="a" name={platform.url}>
+            {platform.title}
+          </Menu.Item>
+        </Link>
+      ))}
     </Menu>
   );
 }
 
 function MenuOptions(props) {
-  const { onShowModal, user, logout } = props;
+  const { onShowModal, auth, logout } = props;
   return (
     <Menu>
-      {user ? (
+      {auth ? (
         <>
           <Link href="/orders">
             <Menu.Item as="a">
@@ -89,7 +88,7 @@ function MenuOptions(props) {
           <Link href="/account">
             <Menu.Item as="a">
               <Icon name="user outline" />
-              {user.name} {user.lastname}
+              Mi Cuenta
             </Menu.Item>
           </Link>
           <Link href="/cart">

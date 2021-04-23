@@ -72,7 +72,7 @@ export async function getMeApi(logout) {
   }
 }
 
-export async function updateNameApi(idUser, data, logout) {
+export async function updateUserApi(idUser, data, logout) {
   try {
     const url = `${BASE_PATH}/users/${idUser}`;
     const params = {

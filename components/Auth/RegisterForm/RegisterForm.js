@@ -21,11 +21,12 @@ export default function RegisterForm(props) {
       // console.log(response);
 
       if (response?.jwt) {
+        setLoading(false);
         showLoginForm(true);
       } else {
+        setLoading(false);
         toast.error("Error al registrar el usuario, inténtelo más tarde.");
       }
-      setLoading(false);
     },
   });
 

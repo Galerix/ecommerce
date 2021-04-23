@@ -3,7 +3,7 @@ import { Form, Button } from "semantic-ui-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { updateNameApi } from "../../../api/user";
+import { updateUserApi } from "../../../api/user";
 
 export default function ChangeNameForm(props) {
   const { user, logout, setReloadUser } = props;
@@ -14,12 +14,12 @@ export default function ChangeNameForm(props) {
     validationSchema: Yup.object(validationSchema()),
     onSubmit: async (formData) => {
       setLoading(true);
-      const response = await updateNameApi(user.id, formData, logout);
+      const response = await updateUserApi(user.id, formData, logout);
       if (!response) {
         toast.error("Error al actualizar el nombre y apellidos");
       } else {
         setReloadUser(true);
-        toast.success("nombre actualizado");
+        toast.success("Nombre actualizado");
       }
       setLoading(false);
       setReloadUser(false);
