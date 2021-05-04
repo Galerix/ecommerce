@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Icon } from "semantic-ui-react";
+import { Icon, Loader } from "semantic-ui-react";
 import { useRouter } from "next/router";
 import BasicLayout from "../layouts/BasicLayout";
 import useAuth from "../hooks/useAuth";
@@ -24,11 +24,19 @@ export default function account() {
   }, [auth]);
 
   if (user === undefined)
-    return <BasicLayout className="account"></BasicLayout>;
+    return (
+      <BasicLayout className="account">
+        <Loader active>Cargando datos...</Loader>
+      </BasicLayout>
+    );
 
   if (!auth && !user) {
     router.replace("/");
-    return <BasicLayout className="account"></BasicLayout>;
+    return (
+      <BasicLayout className="account">
+        <Loader active>Cargando datos...</Loader>
+      </BasicLayout>
+    );
   }
   return (
     <BasicLayout className="account">

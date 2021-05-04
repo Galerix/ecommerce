@@ -1,9 +1,10 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { Container, Menu, Grid, Icon } from "semantic-ui-react";
+import { Container, Menu, Grid, Icon, Label } from "semantic-ui-react";
 import BasicModal from "../../Modal/BasicModal";
 import Auth from "../../Auth";
 import useAuth from "../../../hooks/useAuth";
+import useCart from "../../../hooks/useCart";
 import { getPlatformsApi } from "../../../api/platforms";
 import { map } from "lodash";
 
@@ -69,6 +70,7 @@ function MenuPlatforms(props) {
 
 function MenuOptions(props) {
   const { onShowModal, auth, logout } = props;
+  const { productsCart } = useCart();
   return (
     <Menu>
       {auth ? (
@@ -94,6 +96,11 @@ function MenuOptions(props) {
           <Link href="/cart">
             <Menu.Item as="a" className="m-0">
               <Icon name="cart" />
+              {productsCart > 0 && (
+                <Label color="red" floating circular>
+                  {productsCart}
+                </Label>
+              )}
             </Menu.Item>
           </Link>
           <Menu.Item onClick={logout} className="m-0">
